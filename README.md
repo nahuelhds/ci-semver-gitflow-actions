@@ -1,2 +1,2 @@
-# gitflow-ci-semver-actions
+# ci-semver-gitflow-actions
 An example repo of CI with semantic versioning with gitflow branching model
