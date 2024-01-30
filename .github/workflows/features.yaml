@@ -1,9 +1,7 @@
-name: Start branch version
+name: Start PR version
 
 on:
   pull_request:
-    types:
-      - opened
     branches:
       - develop
 
@@ -26,7 +24,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Extract branch name"
-        id: branch
+        id: extract_branch
         uses: keptn/gh-action-extract-branch-name@main
 
       - name: Print outputs
@@ -45,10 +43,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
         with:
-          bump-policy: 'ignore'
-          version-type: preminor
-          preid: ${{ steps.branch.outputs.BRANCH_SLUG }}
+          version-type: ${{ github.event.action == 'opened' && "preminor" || "prerelease" }}
+          preid: ${{ steps.extract_branch.outputs.BRANCH_SLUG }}
           rc-wording: ''
+          skip-commit: 'true'
 
       - name: 'cat package.json'
         run: cat ./package.json
