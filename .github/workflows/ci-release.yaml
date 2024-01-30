@@ -25,7 +25,7 @@ jobs:
           fetch-depth: 0
 
       - name: 'Tag RC version'
-        id: version-bump
+        id: rc-bump
         uses: 'nahuelhds/gh-action-bump-version@master'
         if: ${{ github.event.pull_request.merged != true }}
         env:
@@ -38,7 +38,7 @@ jobs:
           # skip-tag: 'true'
 
       - name: 'Tag final version'
-        id: version-bump
+        id: final-bump
         uses: 'nahuelhds/gh-action-bump-version@master'
         if: ${{ github.event.pull_request.merged == true }}
         env:
@@ -55,7 +55,7 @@ jobs:
 
       - name: 'Output Step'
         run: |
-          echo TAG: ${{ steps.version-bump.outputs.newTag }}
+          echo TAG: ${{ steps.rc-bump.outputs.newTag || steps.final-bump.outputs.newTag}}
 
   build:
     needs: bump
