@@ -1,4 +1,4 @@
-name: CI
+name: Versioning
 
 on:
   pull_request:
@@ -6,28 +6,8 @@ on:
       - develop
 
 jobs:
-  build-flag:
-    name: "Precondition"
-
-    runs-on: ubuntu-latest
-    outputs:
-      enabled: ${{ github.event.pull_request.merged == true || github.event.action == 'opened' || contains(steps.commit.outputs.message, '[build]') }}
-
-    steps:
-      - name: 'Checkout source code'
-        uses: 'actions/checkout@v4'
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-
-      - name: "Commit message"
-        id: commit
-        run: echo "message=$(git show -s --format=%s)" >> $GITHUB_OUTPUT
-
   bump:
-    name: 'Bump version'
-    needs: build-flag
-    if: ${{ needs.build-flag.outputs.enabled == 'true' }}
+    name: 'Alpha version'
     runs-on: ubuntu-latest
 
     permissions:
@@ -43,11 +23,12 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
-      - name: "Extract branch name"
-        id: extract_branch
-        uses: keptn/gh-action-extract-branch-name@main
+      - name: "Get commit info"
+        id: commit-info
+        run: |
+          echo "sha=$(git rev-parse --short ${{ github.event.pull_request.head.sha }})" >> $GITHUB_OUTPUT
 
-      - name: 'Tag PR version'
+      - name: 'Tag version'
         id: version-bump
         uses: 'nahuelhds/gh-action-bump-version@master'
         if: ${{ github.event.pull_request.merged != true }}
@@ -56,24 +37,12 @@ jobs:
         with:
           # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
           bump-policy: 'ignore'
-          version-type: ${{ github.event.action == 'opened' && 'preminor' || 'prerelease' }}
-          preid: ${{ steps.extract_branch.outputs.BRANCH_SLUG }}
+          version-type: minor
+          tag-suffix: -alpha.${{ steps.commit-info.outputs.sha }}
           # For features, we want to create the tag but not changing the package.json
           skip-commit: 'true'
           # Use skip-tag if you create the tag in another step of your workflow
           # skip-tag: 'true'
-
-      - name: 'Bump PR version'
-        id: version-bump-release
-        uses: 'nahuelhds/gh-action-bump-version@master'
-        if: ${{ github.event.pull_request.merged == true }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
-          bump-policy: 'ignore'
-          version-type: 'prerelease'
-          preid: 'alpha'
 
       - name: "cat package.json"
         run: cat package.json
@@ -83,8 +52,8 @@ jobs:
           echo TAG: ${{ steps.version-bump.outputs.newTag }}
 
   build:
-    name: "Build"
     needs: bump
+    name: "Build ${{ needs.bump.outputs.version }}"
     runs-on: ubuntu-latest
     steps:
       - name: 'Version built: ${{ needs.bump.outputs.version }}'
