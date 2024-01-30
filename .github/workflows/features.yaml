@@ -25,6 +25,12 @@ jobs:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
 
+      - name: "Extract branch name"
+        id: branch
+        uses: keptn/gh-action-extract-branch-name@main
+        with:
+          GITHUB_REF: ${{ github.head_ref }}
+
       - name: 'cat package.json'
         run: cat ./package.json
 
@@ -36,10 +42,8 @@ jobs:
         # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
         with:
           version-type: preminor
-          preid: test
+          preid: ${{ steps.branch.outputs.BRANCH_SLUG }}
           rc-wording: ''
-          skip-commit: true
-          skip-tag: true
 
       - name: 'cat package.json'
         run: cat ./package.json
