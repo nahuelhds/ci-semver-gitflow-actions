@@ -11,7 +11,7 @@ jobs:
 
     runs-on: ubuntu-latest
     outputs:
-      enabled: ${{ github.event.action == 'opened' || contains(steps.commit.outputs.message, '[build]') }}
+      enabled: ${{ github.event.pull_request.merged == true || github.event.action == 'opened' || contains(steps.commit.outputs.message, '[build]') }}
 
     steps:
       - name: 'Checkout source code'
