@@ -18,13 +18,14 @@ jobs:
       new-version: ${{ steps.version-bump.outputs.newTag }}
 
     steps:
-      - name: 'cat package.json'
-        run: cat ./package.json
 
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
         with:
           ref: ${{ github.ref }}
+
+      - name: 'cat package.json'
+        run: cat ./package.json
 
       - name: 'Bump version'
         id: version-bump
