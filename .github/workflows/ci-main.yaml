@@ -8,6 +8,9 @@ on:
       - master
       - main
 
+env:
+  MAIN_BRANCH: main
+
 jobs:
   bump:
     if: ${{ github.event.pull_request.merged == true }}
@@ -24,7 +27,7 @@ jobs:
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
         with:
-          ref: ${{ github.ref }}
+          ref: $MAIN_BRANCH
           fetch-depth: 0
 
       - name: 'Final version'
@@ -33,7 +36,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          target-branch: ${{ github.ref }}
+          target-branch: $MAIN_BRANCH
           # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
           bump-policy: 'ignore'
           version-type: minor
@@ -70,7 +73,7 @@ jobs:
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
         with:
-          ref: ${{ github.sha }}
+          ref: $MAIN_BRANCH
           fetch-depth: 0
 
       - name: Clean "${{ needs.bump.outputs.version }}-*" tags
