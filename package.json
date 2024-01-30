@@ -1,0 +1,15 @@
+{
+  "name": "ci-semver-gitflow-actions",
+  "version": "1.0.0",
+  "description": "Example project for showing how to CI with gitflow and automatic semver",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nahuelhds/ci-semver-gitflow-actions.git"
+  }
+}
