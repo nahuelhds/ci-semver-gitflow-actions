@@ -6,7 +6,7 @@ on:
 
 jobs:
   prepare:
-    name: 'Get next version'
+    name: 'Prepare'
     runs-on: ubuntu-latest
 
     permissions:
