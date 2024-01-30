@@ -17,5 +17,7 @@ An example repo of CI with semantic versioning with gitflow branching model
 ### Read version
 - [Get current package version](https://github.com/marketplace/actions/get-current-package-version)
 
-## Notes
-- Increment could use `${{ github.run_number }}`
+## Next step:
+
+Fully integrate with [Semantic Release](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/ci-configurations/github-actions.md)
+- [Release workflow](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/release-workflow/README.md)
