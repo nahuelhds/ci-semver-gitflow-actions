@@ -1,10 +1,13 @@
-name: Build version on PRs
+name: Start branch version
 
 on:
   workflow_dispatch:
   push:
     branches:
       - feature/**
+  pull_request:
+    types:
+      - opened
 
 jobs:
   prepare:
