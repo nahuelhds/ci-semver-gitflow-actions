@@ -1,4 +1,4 @@
-name: Create version
+name: Next PR version
 
 on:
   issue_comment:
@@ -6,6 +6,7 @@ on:
 
 jobs:
   prepare:
+    if: contains(github.event.comment.body, '/build')
     name: 'Prepare'
     runs-on: ubuntu-latest
 
@@ -34,7 +35,7 @@ jobs:
         # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
         with:
           bump-policy: 'ignore'
-          version-type: preminor
+          version-type: prerelease
           preid: ${{ steps.extract_branch.outputs.BRANCH_SLUG }}
 
       - name: 'Output Step'
@@ -42,6 +43,7 @@ jobs:
           echo TAG: ${{ steps.version-bump.outputs.newTag }}
 
   build:
+    if: contains(github.event.comment.body, '/build')
     name: "Create: ${{ needs.prepare.outputs.next-version }}"
     needs: prepare
     runs-on: ubuntu-latest

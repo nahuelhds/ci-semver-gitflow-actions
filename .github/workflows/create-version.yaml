@@ -1,8 +1,8 @@
-name: Create version
+name: Create PR version
 
 on:
-  issue_comment:
-    types: [created]
+  pull_request:
+    types: [ opened ]
 
 jobs:
   prepare:
@@ -34,7 +34,7 @@ jobs:
         # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
         with:
           bump-policy: 'ignore'
-          version-type: prerelease
+          version-type: preminor
           preid: ${{ steps.extract_branch.outputs.BRANCH_SLUG }}
 
       - name: 'Output Step'
@@ -42,6 +42,7 @@ jobs:
           echo TAG: ${{ steps.version-bump.outputs.newTag }}
 
   build:
+    if: ${{ github.event.issue.pull_request }}
     name: "Create: ${{ needs.prepare.outputs.next-version }}"
     needs: prepare
     runs-on: ubuntu-latest
