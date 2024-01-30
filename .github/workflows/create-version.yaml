@@ -3,6 +3,7 @@ name: Create PR version
 on:
   pull_request:
     types: [ opened ]
+    branches: [ develop ]
 
 jobs:
   prepare:
