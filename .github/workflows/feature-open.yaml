@@ -45,8 +45,8 @@ jobs:
         # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
         with:
           bump-policy: 'ignore'
-          version-type: prerelease
-          preid: test
+          version-type: preminor
+          preid: ${{ steps.branch.outputs.BRANCH_SLUG }}
           rc-wording: ''
 
       - name: 'cat package.json'
