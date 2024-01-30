@@ -7,7 +7,7 @@ on:
 
 jobs:
   prepare:
-    if: ${{ github.event.action == 'opened' || contains(github.event.head_commit.message, 'build') }}
+    if: ${{ github.event.action == 'opened' || contains(github.event.head_commit.message, '#build') }}
     name: 'Prepare'
     runs-on: ubuntu-latest
 
