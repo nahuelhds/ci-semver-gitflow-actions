@@ -43,7 +43,6 @@ jobs:
           echo TAG: ${{ steps.version-bump.outputs.newTag }}
 
   build:
-    if: contains(github.event.comment.body, '/build')
     name: "Create: ${{ needs.prepare.outputs.next-version }}"
     needs: prepare
     runs-on: ubuntu-latest

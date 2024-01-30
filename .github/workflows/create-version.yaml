@@ -42,7 +42,6 @@ jobs:
           echo TAG: ${{ steps.version-bump.outputs.newTag }}
 
   build:
-    if: ${{ github.event.issue.pull_request }}
     name: "Create: ${{ needs.prepare.outputs.next-version }}"
     needs: prepare
     runs-on: ubuntu-latest
