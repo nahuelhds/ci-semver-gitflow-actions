@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-flag:
-    name: "Check for build flag"
+    name: "Build condition"
 
     runs-on: ubuntu-latest
     outputs:
