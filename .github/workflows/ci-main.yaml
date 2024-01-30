@@ -1,13 +1,14 @@
-name: Develop CI
+name: Main CI
 
 on:
   push:
     branches:
-      - develop
+      - main
+      - master
 
 jobs:
   bump:
-    name: 'Beta version'
+    name: 'Final version'
     runs-on: ubuntu-latest
 
     permissions:
@@ -37,9 +38,6 @@ jobs:
           # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
           bump-policy: 'ignore'
           version-type: minor
-          tag-suffix: -beta+${{ steps.commit-info.outputs.sha }}
-          # For features, we want to create the tag but not changing the package.json
-          skip-commit: 'true'
           # Use skip-tag if you create the tag in another step of your workflow
           # skip-tag: 'true'
 
