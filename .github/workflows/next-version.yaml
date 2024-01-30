@@ -4,13 +4,10 @@ on:
   pull_request:
     branches:
       - develop
-  issue_comment:
-    types:
-      - created
 
 jobs:
   prepare:
-    if: ${{ github.event.action == 'opened' || contains(github.event.head_commit.message, 'build') || contains(github.event.comment.body, '/build') }}
+    if: ${{ github.event.action == 'opened' || contains(github.event.head_commit.message, 'build') }}
     name: 'Prepare'
     runs-on: ubuntu-latest
 
