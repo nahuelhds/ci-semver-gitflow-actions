@@ -35,6 +35,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
         with:
+          version-type: prerelease
+          preid: 'test'
+          patch-wording:  'patch,fixes'
           skip-commit: true
           skip-tag: true
 
