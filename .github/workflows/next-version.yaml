@@ -31,12 +31,14 @@ jobs:
       - name: "Build flag: enabled"
         id: build-flag
         if: contains(steps.commit.outputs.message, '[build]')
-        run: echo enabled=true >> $GITHUB_OUTPUT
+        run: |
+          echo "enabled=true" >> $GITHUB_OUTPUT
 
       - name: "Build flag: omitted"
         id: build-flag
         if: !contains(steps.commit.outputs.message, '[build]')
-        run: echo enabled=false >> $GITHUB_OUTPUT
+        run: |
+          echo "enabled=false" >> $GITHUB_OUTPUT
 
       - name: "Extract branch name"
         id: extract_branch
