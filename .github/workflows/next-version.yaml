@@ -10,7 +10,7 @@ on:
 
 jobs:
   prepare:
-    if: ${{ contains(github.event.comment.body, '/build') || !contains(github.event.head_commit.message, 'build') }}
+    if: ${{ github.event.action == 'opened' || contains(github.event.head_commit.message, 'build') || contains(github.event.comment.body, '/build') }}
     name: 'Prepare'
     runs-on: ubuntu-latest
 
