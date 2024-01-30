@@ -68,10 +68,10 @@ jobs:
           echo TAG: ${{ steps.version-bump.outputs.newTag }}
 
   build:
-    name: "Build: ${{ needs.bump.outputs.version }}"
+    name: "Build"
     needs: bump
     runs-on: ubuntu-latest
     steps:
-      - name: 'Output Step'
+      - name: 'Version built: ${{ needs.bump.outputs.version }}'
         run: |
           echo TAG: ${{ needs.bump.outputs.version }}
