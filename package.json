@@ -1,6 +1,6 @@
 {
   "name": "ci-semver-gitflow-actions",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Example project for showing how to CI with gitflow and automatic semver",
   "main": "index.js",
   "scripts": {
