@@ -56,7 +56,7 @@ jobs:
           # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
           bump-policy: 'last-commit'
           version-type: ${{ github.event.action == 'opened' && 'preminor' || 'prerelease' }}
-          preid: ${{ steps.extract_branch.outputs.BRANCH_SLUG }}
+          preid: ${{ github.event.pull_request.merged == true && 'alpha' || steps.extract_branch.outputs.BRANCH_SLUG }}
           # Use skip-tag if you create the tag in another step of your workflow
           # skip-tag: 'true'
 
