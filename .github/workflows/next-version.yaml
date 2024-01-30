@@ -48,7 +48,7 @@ jobs:
           echo TAG: ${{ steps.version-bump.outputs.newTag }}
 
   build:
-    name: "Create: ${{ needs.prepare.outputs.next-version }}"
+    name: "Create"
     needs: prepare
     runs-on: ubuntu-latest
     steps:
