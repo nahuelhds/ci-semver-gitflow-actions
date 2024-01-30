@@ -38,7 +38,7 @@ jobs:
         uses: keptn/gh-action-extract-branch-name@main
 
       - name: 'Bump version'
-        if: ${{ github.event.action == 'opened' || steps.build-flag.outputs.enabled == 'true') }}
+        if: ${{ github.event.action == 'opened' || steps.build-flag.outputs.enabled == 'true' }}
         id: version-bump
         uses: 'nahuelhds/gh-action-bump-version@master'
         env:
