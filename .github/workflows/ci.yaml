@@ -62,6 +62,7 @@ jobs:
           commit-message: |
             CI: bumps version to {{version}}
             
+            
             request-checks: true
 
       - name: "cat package.json"
