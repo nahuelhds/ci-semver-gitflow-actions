@@ -15,7 +15,7 @@ jobs:
       contents: write
 
     outputs:
-      version: ${{ steps.version-bump.outputs.newTag }}
+      version: ${{ steps.rc-bump.outputs.newTag || steps.final-bump.outputs.newTag }}
 
     steps:
       - name: 'Checkout source code'
@@ -55,7 +55,7 @@ jobs:
 
       - name: 'Output Step'
         run: |
-          echo TAG: ${{ steps.rc-bump.outputs.newTag || steps.final-bump.outputs.newTag}}
+          echo TAG: ${{ steps.rc-bump.outputs.newTag || steps.final-bump.outputs.newTag }}
 
   build:
     needs: bump
