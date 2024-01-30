@@ -43,6 +43,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
         with:
+          default: preminor
 #          version-type: ${{ github.event.action == 'opened' && 'preminor' || 'prerelease' }}
           preid: ${{ steps.extract_branch.outputs.BRANCH_SLUG }}
           patch-wording: 'patch,patches,fix,fixes'
