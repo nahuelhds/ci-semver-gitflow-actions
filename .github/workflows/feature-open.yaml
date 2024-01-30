@@ -1,10 +1,6 @@
 name: Start branch version
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - feature/**
   pull_request:
     types:
       - opened
