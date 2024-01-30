@@ -1,12 +1,32 @@
-name: Next PR version
+name: Versioning
 
 on:
-  issue_comment:
-    types: [created]
+  pull_request:
+    branches:
+      - develop
 
 jobs:
+  build-flag:
+    name: "Build condition"
+
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ github.event.action == 'opened' || contains(steps.commit.outputs.message, '[build]') }}
+
+    steps:
+      - name: 'Checkout source code'
+        uses: 'actions/checkout@v4'
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: "Commit message"
+        id: commit
+        run: echo "message=$(git show -s --format=%s)" >> $GITHUB_OUTPUT
+
   prepare:
-    if: contains(github.event.comment.body, '/build')
+    needs: build-flag
+    if: ${{ needs.build-flag.outputs.enabled == 'true' }}
     name: 'Prepare'
     runs-on: ubuntu-latest
 
@@ -14,13 +34,13 @@ jobs:
       contents: write
 
     outputs:
-      next-version: ${{ steps.version-bump.outputs.newTag }}
+      version: ${{ steps.version-bump.outputs.newTag }}
 
     steps:
-
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
       - name: "Extract branch name"
@@ -32,10 +52,10 @@ jobs:
         uses: 'nahuelhds/gh-action-bump-version@master'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
         with:
+          # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
           bump-policy: 'ignore'
-          version-type: prerelease
+          version-type: ${{ github.event.action == 'opened' && 'preminor' || 'prerelease' }}
           preid: ${{ steps.extract_branch.outputs.BRANCH_SLUG }}
 
       - name: 'Output Step'
@@ -43,11 +63,10 @@ jobs:
           echo TAG: ${{ steps.version-bump.outputs.newTag }}
 
   build:
-    if: contains(github.event.comment.body, '/build')
-    name: "Create: ${{ needs.prepare.outputs.next-version }}"
+    name: "Create: ${{ needs.prepare.outputs.version }}"
     needs: prepare
     runs-on: ubuntu-latest
     steps:
       - name: 'Output Step'
         run: |
-          echo TAG: ${{ needs.prepare.outputs.next-version }}
+          echo TAG: ${{ needs.prepare.outputs.version }}
