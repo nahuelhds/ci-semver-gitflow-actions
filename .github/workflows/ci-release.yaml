@@ -24,7 +24,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
-      - name: 'Tag version'
+      - name: 'Tag RC version'
         id: version-bump
         uses: 'nahuelhds/gh-action-bump-version@master'
         if: ${{ github.event.pull_request.merged != true }}
@@ -34,6 +34,19 @@ jobs:
           # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
           bump-policy: 'ignore'
           version-type: ${{ github.event.action == 'opened' && 'preminor' || 'prerelease' }}
+          # Use skip-tag if you create the tag in another step of your workflow
+          # skip-tag: 'true'
+
+      - name: 'Tag final version'
+        id: version-bump
+        uses: 'nahuelhds/gh-action-bump-version@master'
+        if: ${{ github.event.pull_request.merged == true }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
+          bump-policy: 'ignore'
+          version-type: minor
           # Use skip-tag if you create the tag in another step of your workflow
           # skip-tag: 'true'
 
@@ -52,3 +65,25 @@ jobs:
       - name: 'Version built: ${{ needs.bump.outputs.version }}'
         run: |
           echo TAG: ${{ needs.bump.outputs.version }}
+
+  clean-tags:
+    if: ${{ github.event.pull_request.merged == true }}
+    needs:
+      - bump
+      - build
+    name: "Clean tags"
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: 'Checkout source code'
+        uses: 'actions/checkout@v4'
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Clean "${{ needs.bump.outputs.version }}-*" tags
+        run: |
+          git tag | grep ${{ needs.bump.outputs.version }}- | xargs -n 1 -I% git push origin :refs/tags/%
