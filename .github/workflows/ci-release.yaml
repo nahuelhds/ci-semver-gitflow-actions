@@ -33,7 +33,7 @@ jobs:
         with:
           # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
           bump-policy: 'ignore'
-          version-type: preminor
+          version-type: ${{ github.event.action == 'opened' && 'preminor' || 'prerelease' }}
           # Use skip-tag if you create the tag in another step of your workflow
           # skip-tag: 'true'
 
