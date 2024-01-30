@@ -54,11 +54,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
-          bump-policy: 'ignore'
+          bump-policy: 'last-commit'
           version-type: ${{ github.event.action == 'opened' && 'preminor' || 'prerelease' }}
           preid: ${{ steps.extract_branch.outputs.BRANCH_SLUG }}
           # Use skip-tag if you create the tag in another step of your workflow
           # skip-tag: 'true'
+          commit-message: |
+            CI: bumps version to {{version}}
+            
+            request-checks: true
 
       - name: "cat package.json"
         run: cat package.json
