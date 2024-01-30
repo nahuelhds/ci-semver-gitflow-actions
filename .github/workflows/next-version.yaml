@@ -11,7 +11,7 @@ jobs:
 
     runs-on: ubuntu-latest
     outputs:
-      enabled: ${{ steps.build-flag.outputs.enabled-opened == 'true' || steps.build-flag.outputs.enabled-commit == 'true' }}
+      enabled: ${{ github.event.action == 'opened' || contains(steps.commit.outputs.message, '[build]') }}
 
     steps:
       - name: 'Checkout source code'
@@ -23,16 +23,6 @@ jobs:
       - name: "Commit message"
         id: commit
         run: echo "message=$(git show -s --format=%s)" >> $GITHUB_OUTPUT
-
-      - name: "Enabled: PR opened"
-        id: enabled-opened
-        if: github.event.action == 'opened'
-        run: echo "enabled=true" >> $GITHUB_OUTPUT
-
-      - name: "Enabled: has [build] flag"
-        id: enabled-commit
-        if: ${{ github.event.action != 'opened' && contains(steps.commit.outputs.message, '[build]') }}
-        run: echo "enabled=true" >> $GITHUB_OUTPUT
 
   prepare:
     needs: build-flag
