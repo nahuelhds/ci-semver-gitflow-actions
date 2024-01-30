@@ -47,18 +47,33 @@ jobs:
         id: extract_branch
         uses: keptn/gh-action-extract-branch-name@main
 
-      - name: 'Bump version'
+      - name: 'Tag PR version'
         id: version-bump
         uses: 'nahuelhds/gh-action-bump-version@master'
+        if: ${{ github.event.pull_request.merged != true }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
-          bump-policy: 'last-commit'
+          bump-policy: 'ignore'
           version-type: ${{ github.event.action == 'opened' && 'preminor' || 'prerelease' }}
-          preid: ${{ github.event.pull_request.merged == true && 'alpha' || steps.extract_branch.outputs.BRANCH_SLUG }}
+          preid: ${{ steps.extract_branch.outputs.BRANCH_SLUG }}
+          # For features, we want to create the tag but not changing the package.json
+          skip-commit: 'true'
           # Use skip-tag if you create the tag in another step of your workflow
           # skip-tag: 'true'
+
+      - name: 'Bump PR version'
+        id: version-bump-release
+        uses: 'nahuelhds/gh-action-bump-version@master'
+        if: ${{ github.event.pull_request.merged == true }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
+          bump-policy: 'ignore'
+          version-type: 'prerelease'
+          preid: 'alpha'
 
       - name: "cat package.json"
         run: cat package.json
