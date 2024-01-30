@@ -43,7 +43,7 @@ jobs:
         with:
           bump-policy: 'ignore'
           version-type: prerelease
-          preid: ${{ steps.branch.outputs.BRANCH_SLUG }}
+          preid: test
           rc-wording: ''
           skip-commit: 'true'
 
