@@ -7,7 +7,7 @@ on:
       - 'feature/**'
 
 jobs:
-  bump:
+  get-next-version:
     name: 'Get next version'
     runs-on: ubuntu-latest
 
@@ -15,7 +15,7 @@ jobs:
       contents: write
 
     outputs:
-      new-version: ${{ steps.version-bump.outputs.newTag }}
+      next-version: ${{ steps.version-bump.outputs.newTag }}
 
     steps:
 
@@ -45,9 +45,10 @@ jobs:
           echo TAG: ${{ steps.version-bump.outputs.newTag }}
 
   build:
-    name: "Build: ${{ needs.bump.outputs.new-version }}"
+    name: "Build: ${{ needs.bump.outputs.next-version }}"
+    needs: get-next-version
     runs-on: ubuntu-latest
     steps:
       - name: 'Output Step'
         run: |
-          echo TAG: ${{ needs.bump.outputs.new-version }}
+          echo TAG: ${{ needs.bump.outputs.next-version }}
