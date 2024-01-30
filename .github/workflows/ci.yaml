@@ -62,6 +62,9 @@ jobs:
           # Amend commit is for pushing the package.json change to the same commit
           amend-commit: 'true'
 
+      - name: "cat package.json"
+        run: cat package.json
+
       - name: 'Output Step'
         run: |
           echo TAG: ${{ steps.version-bump.outputs.newTag }}
