@@ -1,14 +1,17 @@
-name: Main CI
+name: Release CI
 
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
-      - main
       - master
+      - main
 
 jobs:
   bump:
-    name: 'Final version'
+    if: ${{ github.event.pull_request.merged == true }}
+    name: 'RC version'
     runs-on: ubuntu-latest
 
     permissions:
@@ -21,10 +24,10 @@ jobs:
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
-      - name: 'Tag version'
+      - name: 'Final version'
         id: version-bump
         uses: 'nahuelhds/gh-action-bump-version@master'
         env:
