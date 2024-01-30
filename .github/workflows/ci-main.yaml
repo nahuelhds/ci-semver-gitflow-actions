@@ -64,6 +64,12 @@ jobs:
     name: "Clean tags"
     runs-on: ubuntu-latest
     steps:
+      - name: 'Checkout source code'
+        uses: 'actions/checkout@v4'
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
       - name: Clean "${{ needs.bump.outputs.version }}-*" tags
         run: |
           git tag | grep 1.1.0- | xargs -n 1 -I% git push origin :refs/tags/%
