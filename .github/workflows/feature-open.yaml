@@ -28,7 +28,7 @@ jobs:
         id: branch
         uses: keptn/gh-action-extract-branch-name@main
         with:
-          GITHUB_REF: ${{ github.head_ref }}
+          GITHUB_REF: ${{ github.ref }}
 
       - name: 'cat package.json'
         run: cat ./package.json
