@@ -1,4 +1,4 @@
-name: Release CI
+name: Main CI
 
 on:
   pull_request:
@@ -33,6 +33,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          target-branch: ${{ github.sha }}
           # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
           bump-policy: 'ignore'
           version-type: minor
