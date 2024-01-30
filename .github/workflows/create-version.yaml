@@ -2,8 +2,10 @@ name: Create PR version
 
 on:
   pull_request:
-    types: [ opened ]
-    branches: [ develop ]
+    types:
+      - opened
+    branches:
+      - develop
 
 jobs:
   prepare:
@@ -21,7 +23,6 @@ jobs:
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
         with:
-          ref: ${{ github.ref }}
           fetch-depth: 0
 
       - name: "Extract branch name"

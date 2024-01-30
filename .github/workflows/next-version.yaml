@@ -1,12 +1,16 @@
 name: Next PR version
 
 on:
+  pull_request:
+    branches:
+      - develop
   issue_comment:
-    types: [created]
+    types:
+      - created
 
 jobs:
   prepare:
-    if: contains(github.event.comment.body, '/build')
+    if: ${{ contains(github.event.comment.body, '/build') || !contains(github.event.head_commit.message, 'build') }}
     name: 'Prepare'
     runs-on: ubuntu-latest
 
@@ -21,7 +25,7 @@ jobs:
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
         with:
-          ref: github.ref
+          ref: ${{ github.ref }}
           fetch-depth: 0
 
       - name: "Extract branch name"
