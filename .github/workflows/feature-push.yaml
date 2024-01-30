@@ -1,0 +1,62 @@
+name: Build branch version
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/**
+
+jobs:
+  prepare:
+    name: 'Prepare'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    outputs:
+      next-version: ${{ steps.version-bump.outputs.newTag }}
+
+    steps:
+
+      - name: 'Checkout source code'
+        uses: 'actions/checkout@v4'
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: "Extract branch name"
+        id: branch
+        uses: keptn/gh-action-extract-branch-name@main
+        with:
+          GITHUB_REF: ${{ github.head_ref }}
+
+      - name: 'cat package.json'
+        run: cat ./package.json
+
+      - name: 'Bump version'
+        id: version-bump
+        uses: 'nahuelhds/gh-action-bump-version@master'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
+        with:
+          bump-policy: 'ignore'
+          version-type: prerelease
+          preid: ${{ steps.branch.outputs.BRANCH_SLUG }}
+
+      - name: 'cat package.json'
+        run: cat ./package.json
+
+      - name: 'Output Step'
+        run: |
+          echo TAG: ${{ steps.version-bump.outputs.newTag }}
+
+  build:
+    name: "Build: ${{ needs.prepare.outputs.next-version }}"
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Output Step'
+        run: |
+          echo TAG: ${{ needs.prepare.outputs.next-version }}

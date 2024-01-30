@@ -1,41 +1,54 @@
-name: Build version on PRs
+name: Start branch version
 
 on:
   workflow_dispatch:
-  pull_request:
+  push:
     branches:
-      - 'feature/**'
+      - feature/**
+  pull_request:
+    types:
+      - opened
 
 jobs:
-  bump:
-    name: 'Get next version'
+  prepare:
+    name: 'Prepare'
     runs-on: ubuntu-latest
 
     permissions:
       contents: write
 
     outputs:
-      new-version: ${{ steps.version-bump.outputs.newTag }}
+      next-version: ${{ steps.version-bump.outputs.newTag }}
 
     steps:
 
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: "Extract branch name"
+        id: branch
+        uses: keptn/gh-action-extract-branch-name@main
+        with:
+          GITHUB_REF: ${{ github.head_ref }}
 
       - name: 'cat package.json'
         run: cat ./package.json
 
       - name: 'Bump version'
         id: version-bump
-        uses: 'phips28/gh-action-bump-version@master'
+        uses: 'nahuelhds/gh-action-bump-version@master'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
         with:
-          skip-commit: true
-          skip-tag: true
+          bump-policy: 'ignore'
+          version-type: prerelease
+          preid: test
+          rc-wording: ''
+          skip-commit: 'true'
 
       - name: 'cat package.json'
         run: cat ./package.json
@@ -45,9 +58,10 @@ jobs:
           echo TAG: ${{ steps.version-bump.outputs.newTag }}
 
   build:
-    name: "Build: ${{ needs.bump.outputs.new-version }}"
+    name: "Build: ${{ needs.prepare.outputs.next-version }}"
+    needs: prepare
     runs-on: ubuntu-latest
     steps:
       - name: 'Output Step'
         run: |
-          echo TAG: ${{ needs.bump.outputs.new-version }}
+          echo TAG: ${{ needs.prepare.outputs.next-version }}
