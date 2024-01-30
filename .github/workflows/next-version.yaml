@@ -1,4 +1,4 @@
-name: Next PR version
+name: Versioning
 
 on:
   pull_request:
