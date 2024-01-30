@@ -4,7 +4,8 @@
   "description": "Example project for showing how to CI with gitflow and automatic semver",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "refresh-tags": "git tag | xargs -n 1 -I% git tag -d % && git fetch"
   },
   "author": "",
   "license": "ISC",
