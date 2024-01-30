@@ -59,6 +59,8 @@ jobs:
           preid: ${{ steps.extract_branch.outputs.BRANCH_SLUG }}
           # Use skip-tag if you create the tag in another step of your workflow
           # skip-tag: 'true'
+          # Amend commit is for pushing the package.json change to the same commit
+          amend-commit: 'true'
 
       - name: 'Output Step'
         run: |
