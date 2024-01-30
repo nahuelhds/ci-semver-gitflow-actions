@@ -7,7 +7,6 @@ on:
 
 jobs:
   prepare:
-#    if: ${{ github.event.action == 'opened' || contains(github.event.head_commit.message, '#build') }}
     name: 'Prepare'
     runs-on: ubuntu-latest
 
@@ -18,10 +17,6 @@ jobs:
       next-version: ${{ steps.version-bump.outputs.newTag }}
 
     steps:
-      - name: "Commite message"
-        shell: bash
-        run: |
-          echo "Commit message: ${{ github.event.head_commit.message }}"
 
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
@@ -29,11 +24,16 @@ jobs:
           ref: ${{ github.ref }}
           fetch-depth: 0
 
+      - name: "Commit message"
+        id: commit
+        run: echo "::set-output name=message::$(git show -s --format=%s)"
+
       - name: "Extract branch name"
         id: extract_branch
         uses: keptn/gh-action-extract-branch-name@main
 
       - name: 'Bump version'
+        if: ${{ github.event.action == 'opened' || contains(steps.head_commit.outputs.message, '[build]') }}
         id: version-bump
         uses: 'nahuelhds/gh-action-bump-version@master'
         env:
