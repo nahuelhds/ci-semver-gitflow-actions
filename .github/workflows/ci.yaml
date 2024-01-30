@@ -39,7 +39,7 @@ jobs:
           # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
           bump-policy: 'ignore'
           version-type: minor
-          suffix: -${{ github.head_ref }}.${{ steps.commit-info.outputs.sha }}
+          tag-suffix: -${{ github.head_ref }}.${{ steps.commit-info.outputs.sha }}
           # For features, we want to create the tag but not changing the package.json
           skip-commit: 'true'
           # Use skip-tag if you create the tag in another step of your workflow
