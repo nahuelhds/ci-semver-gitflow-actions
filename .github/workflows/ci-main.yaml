@@ -72,4 +72,4 @@ jobs:
 
       - name: Clean "${{ needs.bump.outputs.version }}-*" tags
         run: |
-          git tag | grep 1.1.0- | xargs -n 1 -I% git push origin :refs/tags/%
+          git tag | grep ${{ needs.bump.outputs.version }}- | xargs -n 1 -I% git push origin :refs/tags/%
