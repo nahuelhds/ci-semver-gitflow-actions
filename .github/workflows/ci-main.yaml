@@ -56,3 +56,14 @@ jobs:
       - name: 'Version built: ${{ needs.bump.outputs.version }}'
         run: |
           echo TAG: ${{ needs.bump.outputs.version }}
+
+  clean-tags:
+    needs:
+      - bump
+      - build
+    name: "Clean tags"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clean "${{ needs.bump.outputs.version }}-*" tags
+        run: |
+          git tag | grep 1.1.0- | xargs -n 1 -I% git push origin :refs/tags/%
