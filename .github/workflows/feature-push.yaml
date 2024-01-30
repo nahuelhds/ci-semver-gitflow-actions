@@ -44,6 +44,7 @@ jobs:
           bump-policy: 'ignore'
           version-type: prerelease
           preid: ${{ steps.branch.outputs.BRANCH_SLUG }}
+          skip-commit: 'true'
 
       - name: 'cat package.json'
         run: cat ./package.json

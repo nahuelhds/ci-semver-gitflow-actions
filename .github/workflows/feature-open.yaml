@@ -48,7 +48,6 @@ jobs:
           version-type: prerelease
           preid: test
           rc-wording: ''
-          skip-commit: 'true'
 
       - name: 'cat package.json'
         run: cat ./package.json
