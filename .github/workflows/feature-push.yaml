@@ -2,9 +2,6 @@ name: Build branch version
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - feature/**
 
 jobs:
   prepare:
@@ -41,7 +38,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
         with:
-          bump-policy: 'ignore'
           version-type: prerelease
           preid: ${{ steps.branch.outputs.BRANCH_SLUG }}
 
