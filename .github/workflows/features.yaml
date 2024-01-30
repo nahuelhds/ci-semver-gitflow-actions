@@ -45,6 +45,7 @@ jobs:
           version-type: preminor
           preid: ${{ steps.branch.outputs.BRANCH_SLUG }}
           rc-wording: ''
+          skip-commit: 'true'
 
       - name: 'cat package.json'
         run: cat ./package.json
