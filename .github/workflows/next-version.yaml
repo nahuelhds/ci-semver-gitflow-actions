@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-flag:
-    name: "Build condition"
+    name: "Precondition"
 
     runs-on: ubuntu-latest
     outputs:
@@ -24,10 +24,10 @@ jobs:
         id: commit
         run: echo "message=$(git show -s --format=%s)" >> $GITHUB_OUTPUT
 
-  prepare:
+  bump:
+    name: 'Bump version'
     needs: build-flag
     if: ${{ needs.build-flag.outputs.enabled == 'true' }}
-    name: 'Prepare'
     runs-on: ubuntu-latest
 
     permissions:
@@ -57,14 +57,16 @@ jobs:
           bump-policy: 'ignore'
           version-type: ${{ github.event.action == 'opened' && 'preminor' || 'prerelease' }}
           preid: ${{ steps.extract_branch.outputs.BRANCH_SLUG }}
+          # Use skip-tag if you create the tag in another step of your workflow
+          # skip-tag: 'true'
 
       - name: 'Output Step'
         run: |
           echo TAG: ${{ steps.version-bump.outputs.newTag }}
 
   build:
-    name: "Create: ${{ needs.prepare.outputs.version }}"
-    needs: prepare
+    name: "Build: ${{ needs.prepare.outputs.version }}"
+    needs: bump
     runs-on: ubuntu-latest
     steps:
       - name: 'Output Step'
