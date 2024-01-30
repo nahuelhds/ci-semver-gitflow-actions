@@ -25,7 +25,7 @@ jobs:
           fetch-depth: 0
 
       - name: 'Tag RC version'
-        id: version-bump
+        id: rc-bump
         uses: 'nahuelhds/gh-action-bump-version@master'
         if: ${{ github.event.pull_request.merged != true }}
         env:
@@ -38,7 +38,7 @@ jobs:
           # skip-tag: 'true'
 
       - name: 'Tag final version'
-        id: version-bump
+        id: final-bump
         uses: 'nahuelhds/gh-action-bump-version@master'
         if: ${{ github.event.pull_request.merged == true }}
         env:
@@ -55,7 +55,7 @@ jobs:
 
       - name: 'Output Step'
         run: |
-          echo TAG: ${{ steps.version-bump.outputs.newTag }}
+          echo TAG: ${{ steps.rc-bump.outputs.newTag || steps.final-bump.outputs.newTag}}
 
   build:
     needs: bump
@@ -87,3 +87,25 @@ jobs:
       - name: Clean "${{ needs.bump.outputs.version }}-*" tags
         run: |
           git tag | grep ${{ needs.bump.outputs.version }}- | xargs -n 1 -I% git push origin :refs/tags/%
+
+  merge-to-develop:
+    if: ${{ github.event.pull_request.merged == true }}
+    needs:
+      - bump
+      - build
+    name: "Merge to develop"
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: 'Checkout source code'
+        uses: 'actions/checkout@v4'
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - run: |
+          git merge master
+          
