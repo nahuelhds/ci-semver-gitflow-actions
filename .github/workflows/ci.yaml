@@ -63,8 +63,8 @@ jobs:
           # For request-checks see: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks#skipping-and-requesting-checks-for-individual-commits
           commit-message: |-
             CI: bumps version to {{version}}
-            \n
-            \n
+            
+            
             skip-checks: true
 
       - name: "cat package.json"
