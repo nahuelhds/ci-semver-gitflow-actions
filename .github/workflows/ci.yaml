@@ -59,11 +59,13 @@ jobs:
           preid: ${{ steps.extract_branch.outputs.BRANCH_SLUG }}
           # Use skip-tag if you create the tag in another step of your workflow
           # skip-tag: 'true'
-          commit-message: |
+
+          # For request-checks see: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks#skipping-and-requesting-checks-for-individual-commits
+          commit-message: |-
             CI: bumps version to {{version}}
-            
-            
-            request-checks: true
+            \n
+            \n
+            skip-checks: true
 
       - name: "cat package.json"
         run: cat package.json
