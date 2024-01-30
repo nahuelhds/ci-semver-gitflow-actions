@@ -21,14 +21,17 @@ jobs:
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
         with:
-          ref: ${{ github.head_ref }}
           fetch-depth: 0
 
       - name: "Extract branch name"
         id: branch
         uses: keptn/gh-action-extract-branch-name@main
-        with:
-          GITHUB_REF: ${{ github.ref }}
+
+      - name: Print outputs
+        run: |
+          echo "GIT_SHA=${{ steps.extract_branch.outputs.GIT_SHA }}"
+          echo "BRANCH_SLUG=${{ steps.extract_branch.outputs.BRANCH_SLUG }}"
+          echo "BRANCH=${{ steps.extract_branch.outputs.BRANCH }}"
 
       - name: 'cat package.json'
         run: cat ./package.json
