@@ -8,7 +8,6 @@ on:
 jobs:
   bump:
     name: 'Feat'
-    if: ${{ needs.build-flag.outputs.enabled == 'true' }}
     runs-on: ubuntu-latest
 
     permissions:
