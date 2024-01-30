@@ -30,7 +30,7 @@ jobs:
 
       - name: 'Bump version'
         id: version-bump
-        uses: 'phips28/gh-action-bump-version@master'
+        uses: 'nahuelhds/gh-action-bump-version@master'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
