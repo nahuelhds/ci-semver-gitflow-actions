@@ -1,0 +1,51 @@
+name: Build version on PRs
+
+on:
+  pull_request:
+    branches:
+      - feature/**
+
+jobs:
+  bump:
+    name: 'Get next version'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    outputs:
+      new-version: ${{ steps.version-bump.outputs.newTag }}
+
+    steps:
+      - name: 'cat package.json'
+        run: cat ./package.json
+
+      - name: 'Checkout source code'
+        uses: 'actions/checkout@v4'
+        with:
+          ref: ${{ github.ref }}
+
+      - name: 'Bump version'
+        id: version-bump
+        uses: 'phips28/gh-action-bump-version@master'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
+        with:
+          skip-commit: true
+          skip-tag: true
+
+      - name: 'cat package.json'
+        run: cat ./package.json
+
+      - name: 'Output Step'
+        run: |
+          echo TAG: ${{ steps.version-bump.outputs.newTag }}
+
+  build:
+    name: "Build: ${{ needs.bump.outputs.new-version }}"
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Output Step'
+        run: |
+          echo TAG: ${{ needs.bump.outputs.new-version }}
