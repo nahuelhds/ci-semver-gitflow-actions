@@ -37,6 +37,7 @@ jobs:
         with:
           version-type: preminor
           preid: test
+          rc-wording: ''
           skip-commit: true
           skip-tag: true
 
