@@ -6,22 +6,16 @@ on:
       - develop
 
 jobs:
-  prepare:
-    name: 'Prepare'
+  build-flag:
+    name: "Check for build flag"
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
-
     outputs:
-      next-version: ${{ steps.version-bump.outputs.newTag }}
-
+      build: ${{ github.event.action == 'opened' || steps.build-flag.outputs.enabled == 'true' }}
     steps:
-
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
       - name: "Commit message"
@@ -29,22 +23,43 @@ jobs:
         run: echo "message=$(git show -s --format=%s)" >> $GITHUB_OUTPUT
 
       - name: "Build flag: enabled"
-        id: build-flag
-        if: contains(steps.commit.outputs.message, '[build]')
+        if: github.event.action == 'opened'
         run: echo "enabled=true" >> $GITHUB_OUTPUT
+
+      - name: "Build flag: enabled"
+        if: ${{ github.event.action != 'opened' && contains(steps.commit.outputs.message, '[build]') }}
+        run: echo "enabled=true" >> $GITHUB_OUTPUT
+
+  prepare:
+    needs: build-flag
+    if: ${{ needs.build-flag.outputs.build == 'true' }}
+    name: 'Prepare'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    outputs:
+      version: ${{ steps.version-bump.outputs.newTag }}
+
+    steps:
+      - name: 'Checkout source code'
+        uses: 'actions/checkout@v4'
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
 
       - name: "Extract branch name"
         id: extract_branch
         uses: keptn/gh-action-extract-branch-name@main
 
       - name: 'Bump version'
-        if: ${{ github.event.action == 'opened' || steps.build-flag.outputs.enabled == 'true' }}
         id: version-bump
         uses: 'nahuelhds/gh-action-bump-version@master'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
         with:
+          # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
           bump-policy: 'ignore'
           version-type: ${{ github.event.action == 'opened' && 'preminor' || 'prerelease' }}
           preid: ${{ steps.extract_branch.outputs.BRANCH_SLUG }}
@@ -54,10 +69,10 @@ jobs:
           echo TAG: ${{ steps.version-bump.outputs.newTag }}
 
   build:
-    name: "Create"
+    name: "Create: ${{ needs.prepare.outputs.version }}"
     needs: prepare
     runs-on: ubuntu-latest
     steps:
       - name: 'Output Step'
         run: |
-          echo TAG: ${{ needs.prepare.outputs.next-version }}
+          echo TAG: ${{ needs.prepare.outputs.version }}
