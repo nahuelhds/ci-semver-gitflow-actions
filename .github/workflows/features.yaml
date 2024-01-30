@@ -36,6 +36,7 @@ jobs:
         # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
         with:
           version-type: prerelease
+          preid: dev
           skip-commit: true
           skip-tag: true
 
