@@ -37,7 +37,7 @@ jobs:
         run: |
           
           type=minor
-          if [ ${{ github.head_ref }} =~ ^release/major$ ]; then
+          if [[ ${{ github.head_ref }} =~ ^release/major$ ]]; then
             type=major
             echo "MAJOR version detected"
           fi
@@ -45,9 +45,11 @@ jobs:
           final_version=prerelease
           echo merged: ${{ github.event.pull_request.merged }}
           echo action: ${{ github.event.action }}
-          if [ ${{ github.event.pull_request.merged }} -eq  true ]; then
+          if [[ ${{ github.event.pull_request.merged }} = true ]]; then
             final_version=$type
-          elif [[ ${{ github.event.action }} -eq 'opened' ]]; then
+          elif [[ ${{ github.event.action }} = 'opened' ]]; then
+            final_version=pre$type
+          elif [[ ${{ github.event.action }} = 'reopened' ]]; then
             final_version=pre$type
           fi
           
