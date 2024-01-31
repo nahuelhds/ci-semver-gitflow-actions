@@ -23,18 +23,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      # For this action to work, see: https://github.com/marketplace/actions/create-pull-request#workflow-permissions
       - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v5
-        with:
-          commit-message: Merge '${{ github.ref_head }}' into ${{ env.MAIN_BRANCH }}
-          title: test${{ needs.bump.outputs.version }} to ${{ env.DEVELOP_BRANCH }}
-          body: Sync '${{ env.DEVELOP_BRANCH }}' with '${{ env.MAIN_BRANCH }}'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check outputs
-        if: ${{ steps.cpr.outputs.pull-request-number }}
+        # Reference: https://cli.github.com/manual/gh_pr_create
         run: |
-          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
-          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+          gh pr create --title "Backport: test..${{ env.DEVELOP_BRANCH }}" --body "Backport for test" --repo $GITHUB_REPOSITORY --base ${{ env.DEVELOP_BRANCH }}
+  #          gh pr create --title "Release ${{ needs.bump.outputs.version }} to ${{ env.DEVELOP_BRANCH }}" --body "$NUM_OPEN_ISSUES issues remaining" --repo $GITHUB_REPOSITORY
+
   
