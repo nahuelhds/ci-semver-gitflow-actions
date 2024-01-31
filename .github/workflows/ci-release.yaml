@@ -12,6 +12,10 @@ on:
       - ready_for_review
       - closed
 
+concurrency:
+  cancel-in-progress: true
+  group: ${{ github.head_ref }}
+
 jobs:
   bump:
     name: 'Release bump'
