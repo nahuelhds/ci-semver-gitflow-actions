@@ -6,11 +6,10 @@ on:
       - master
       - main
 
-env:
-  MERGE_BRANCH: develop
-
 jobs:
   bump:
+    if: true
+
     name: 'RC version'
     runs-on: ubuntu-latest
 

@@ -7,6 +7,8 @@ on:
 
 jobs:
   bump:
+    if: true
+
     name: 'Alpha version'
     runs-on: ubuntu-latest
 
