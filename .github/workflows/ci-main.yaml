@@ -82,6 +82,10 @@ jobs:
           git tag | grep ${{ needs.bump.outputs.version }}- | xargs -n 1 -I% git push origin :refs/tags/%
 
   pr-to-develop:
+    needs:
+      - bump
+      - build
+
     name: "PR to develop"
     runs-on: ubuntu-latest
 
