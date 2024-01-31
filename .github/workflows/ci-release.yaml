@@ -35,20 +35,18 @@ jobs:
       - name: 'Parse version type'
         id: version-type
         run: |
+          
           type=minor
           if [[ ${{ github.head_ref }} =~ ^release/major$ ]]; then
-            type=major" >> $GITHUB_OUTPUT
+            type=major
             echo "MAJOR version detected"
           fi
           
+          final_version=prerelease
           if [[ github.event.pull_request.merged == true ]]; then
             final_version=$type
-          else
-            if [[ github.event.action == 'opened' ]]; then
-              final_version=pre$type
-            else
-              final_version=prerelease
-            fi
+          elif [[ github.event.action == 'opened' ]]; then
+            final_version=pre$type
           fi
           
           echo "Final version type is $final_version"
