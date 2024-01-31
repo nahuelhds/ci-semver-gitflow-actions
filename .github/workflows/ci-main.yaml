@@ -80,3 +80,23 @@ jobs:
       - name: Clean "${{ needs.bump.outputs.version }}-*" tags
         run: |
           git tag | grep ${{ needs.bump.outputs.version }}- | xargs -n 1 -I% git push origin :refs/tags/%
+
+  pr-to-develop:
+    name: "PR to develop"
+    runs-on: ubuntu-latest
+
+    permissions: write-all
+
+    steps:
+      - name: Checkout source code
+        uses: 'actions/checkout@v4'
+        with:
+          fetch-depth: 0
+
+      - name: Create Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        # Reference: https://cli.github.com/manual/gh_pr_create
+        run: |
+          gh pr create --title "Backport: ${{ needs.bump.outputs.version }}..${{ env.DEVELOP_BRANCH }}" --body "Backport for ${{ needs.bump.outputs.version }}" --base ${{ env.DEVELOP_BRANCH }}
