@@ -21,6 +21,7 @@ jobs:
       - name: Checkout source code
         uses: 'actions/checkout@v4'
         with:
+          ref: ${{ env.DEVELOP_BRANCH }}
           fetch-depth: 0
 
       - name: Create Pull Request
@@ -30,7 +31,6 @@ jobs:
           commit-message: Merge '${{ github.ref_head }}' into ${{ env.MAIN_BRANCH }}
           title: test${{ needs.bump.outputs.version }} to ${{ env.DEVELOP_BRANCH }}
           body: Sync '${{ env.DEVELOP_BRANCH }}' with '${{ env.MAIN_BRANCH }}'
-          base: ${{ env.DEVELOP_BRANCH }}
           branch: backport/test${{ needs.bump.outputs.version }}
           delete-branch: true
 
