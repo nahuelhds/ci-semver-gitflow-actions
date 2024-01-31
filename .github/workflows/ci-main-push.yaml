@@ -14,8 +14,7 @@ jobs:
     name: "PR to develop"
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: write
+    permissions: write-all
 
     steps:
       - name: Checkout source code
