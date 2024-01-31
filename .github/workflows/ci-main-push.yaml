@@ -11,10 +11,6 @@ env:
 
 jobs:
   pr-to-develop:
-    needs:
-      - bump
-      - build
-
     name: "PR to develop"
     runs-on: ubuntu-latest
 
