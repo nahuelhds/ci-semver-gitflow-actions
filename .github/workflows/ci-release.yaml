@@ -32,13 +32,16 @@ jobs:
       version: ${{ steps.version-bump.outputs.newTag  }}
 
     steps:
-      - name: 'Output refs'
+      - name: 'Parse version type'
+        id: version-type
         run: |
-          echo ref: ${{ github.ref }}
-          echo base: ${{ github.base_ref }}
-          echo head: ${{ github.head_ref }}
-          echo named-version: ${GITHUB_HEAD_REF##*/}
-          echo "named-version=${GITHUB_HEAD_REF##*/}" >> $GITHUB_OUTPUT
+          if [[ ${github.head_ref} =~ ^release/major-.*$ ]]; then
+            echo "value=major" >> $GITHUB_OUTPUT
+            echo "MAJOR version detected"
+          else
+            echo "value=minor" >> $GITHUB_OUTPUT
+            echo "default to MINOR version"
+          fi
 
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
@@ -58,7 +61,7 @@ jobs:
           # If the PR is merged, then minor: 1.0.0 -> 1.1.0
           # If it has been opened, then pre-minor: 1.0.0 -> 1.1.0-rc.0
           # Otherwise, pre-release: 1.1.0-rc.0 -> 1.1.0-rc.1
-          version-type: ${{ github.event.pull_request.merged == true && 'minor' || github.event.action == 'opened' && 'preminor' || 'prerelease' }}
+          version-type: ${{ github.event.pull_request.merged == true && steps.version-type.outputs.value || github.event.action == 'opened' && format('pre{0}', steps.version-type.outputs.value) || 'prerelease' }}
           # Use skip-tag if you create the tag in another step of your workflow
           # skip-tag: 'true'
 
