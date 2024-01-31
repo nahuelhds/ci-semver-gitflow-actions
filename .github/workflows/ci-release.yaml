@@ -51,6 +51,7 @@ jobs:
             fi
           fi
           
+          echo "Final version type is $final_version"
           echo "value=$final_version" >> $GITHUB_OUTPUT
 
       - name: 'Checkout source code'
