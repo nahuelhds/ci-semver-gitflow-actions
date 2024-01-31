@@ -107,4 +107,4 @@ jobs:
 
         # Reference: https://cli.github.com/manual/gh_pr_create
         run: |
-          gh pr create --title "Backport to ${{ github.event.repository.default_branch }}: ${{ needs.bump.outputs.version }}" --body "Backport for #${{ github.event.pull_request.number }}" --base ${{ github.event.repository.default_branch }}
+          gh pr create --title "Backport ${{ needs.bump.outputs.version }} to ${{ github.event.repository.default_branch }}" --body "Backport for #${{ github.event.pull_request.number }}" --base ${{ github.event.repository.default_branch }}
