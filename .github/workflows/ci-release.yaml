@@ -17,8 +17,7 @@ jobs:
     name: 'Release bump'
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: write
+    permissions: write-all
 
     outputs:
       version: ${{ steps.version-bump.outputs.newTag  }}
