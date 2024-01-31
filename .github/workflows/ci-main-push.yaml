@@ -31,9 +31,6 @@ jobs:
           commit-message: Merge '${{ github.ref_head }}' into ${{ env.MAIN_BRANCH }}
           title: test${{ needs.bump.outputs.version }} to ${{ env.DEVELOP_BRANCH }}
           body: Sync '${{ env.DEVELOP_BRANCH }}' with '${{ env.MAIN_BRANCH }}'
-          base: ${{ env.DEVELOP_BRANCH }}
-          branch: backport/test${{ needs.bump.outputs.version }}
-          delete-branch: true
 
       - name: Check outputs
         if: ${{ steps.cpr.outputs.pull-request-number }}
