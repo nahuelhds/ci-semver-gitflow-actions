@@ -1,4 +1,4 @@
-name: Feature CI
+name: CI
 
 on:
   pull_request:
@@ -15,7 +15,7 @@ jobs:
   bump:
     if: true
 
-    name: 'Alpha version'
+    name: 'Pre-release bump'
     runs-on: ubuntu-latest
 
     permissions:
