@@ -1,4 +1,4 @@
-ame: Main CI
+name: Main CI
 
 on:
   pull_request:
@@ -9,12 +9,13 @@ on:
       - main
 
 env:
-  MERGE_BRANCH: develop
+  DEVELOP_BRANCH: develop
+  MAIN_BRANCH: main
 
 jobs:
   bump:
     if: ${{ github.event.pull_request.merged == true }}
-    name: 'RC version'
+    name: 'Final version'
     runs-on: ubuntu-latest
 
     permissions:
@@ -27,6 +28,7 @@ jobs:
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
         with:
+          ref: ${{ env.MAIN_BRANCH }}
           fetch-depth: 0
 
       - name: 'Final version'
@@ -35,6 +37,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          target-branch: ${{ env.MAIN_BRANCH }}
           # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
           bump-policy: 'ignore'
           version-type: minor
@@ -71,6 +74,7 @@ jobs:
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
         with:
+          ref: ${{ env.MAIN_BRANCH }}
           fetch-depth: 0
 
       - name: Clean "${{ needs.bump.outputs.version }}-*" tags
@@ -78,14 +82,10 @@ jobs:
           git tag | grep ${{ needs.bump.outputs.version }}- | xargs -n 1 -I% git push origin :refs/tags/%
 
   pr-to-develop:
-    needs:
-      - bump
-      - build
     name: "PR to develop"
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: write
+    permissions: write-all
 
     steps:
       - name: Checkout source code
@@ -94,17 +94,9 @@ jobs:
           fetch-depth: 0
 
       - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v5
-        with:
-          commit-message: Merge '${{ github.ref_head }}' into ${{ env.MERGE_BRANCH }}
-          title: ${{ needs.bump.outputs.version }} to ${{ env.MERGE_BRANCH }}
-          body: Sync '${{ env.MERGE_BRANCH }}' with '${{ env.github.ref_head }}'
-          branch: ${{ github.ref_name }}
-          base: ${{ env.MERGE_BRANCH }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check outputs
-        if: ${{ steps.cpr.outputs.pull-request-number }}
+        # Reference: https://cli.github.com/manual/gh_pr_create
         run: |
-          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
-          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+          gh pr create --title "Backport: ${{ needs.bump.outputs.version }}..${{ env.DEVELOP_BRANCH }}" --body "Backport for ${{ needs.bump.outputs.version }}" --base ${{ env.DEVELOP_BRANCH }}
