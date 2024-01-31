@@ -97,6 +97,7 @@ jobs:
       - name: Checkout source code
         uses: 'actions/checkout@v4'
         with:
+          ref: ${{ env.MAIN_BRANCH }}
           fetch-depth: 0
 
       - name: Create Pull Request
