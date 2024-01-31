@@ -13,7 +13,7 @@ on:
 
 jobs:
   bump:
-    if: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master' }}
+    if: ${{ github.head_ref != 'main' && github.head_ref != 'master' }}
 
     name: 'Pre-release bump'
     runs-on: ubuntu-latest
