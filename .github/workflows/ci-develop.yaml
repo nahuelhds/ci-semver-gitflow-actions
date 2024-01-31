@@ -7,6 +7,8 @@ on:
 
 jobs:
   bump:
+    if: false # Set true if you want to enable this
+
     name: 'Beta version'
     runs-on: ubuntu-latest
 
