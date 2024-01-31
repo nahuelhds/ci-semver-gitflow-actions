@@ -6,11 +6,11 @@ on:
       - develop
 
 env:
-  ENABLED: true
+  CI_ENABLED: true
 
 jobs:
   bump:
-    if: ${{ env.ENABLED == 'true' }}
+    if: ${{ env.CI_ENABLED == 'true' }}
 
     name: 'Alpha version'
     runs-on: ubuntu-latest

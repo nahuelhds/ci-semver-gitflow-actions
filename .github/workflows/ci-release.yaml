@@ -7,12 +7,11 @@ on:
       - main
 
 env:
-  ENABLED: true
-  MERGE_BRANCH: develop
+  CI_ENABLED: true
 
 jobs:
   bump:
-    if: ${{ env.ENABLED == 'true' }}
+    if: ${{ env.CI_ENABLED == 'true' }}
 
     name: 'RC version'
     runs-on: ubuntu-latest
