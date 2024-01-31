@@ -35,7 +35,7 @@ jobs:
       - name: 'Parse version type'
         id: version-type
         run: |
-          if [[ $GITHUB_HEAD_REF =~ ^release/major-.*$ ]]; then
+          if [[ ${{ github.head_ref }} =~ ^release/major-.*$ ]]; then
             echo "value=major" >> $GITHUB_OUTPUT
             echo "MAJOR version detected"
           else
