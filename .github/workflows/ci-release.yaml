@@ -12,10 +12,18 @@ on:
       - ready_for_review
       - closed
 
+concurrency:
+  cancel-in-progress: true
+  group: ${{ github.head_ref }}
+
 jobs:
   bump:
     name: 'Release bump'
     runs-on: ubuntu-latest
+
+    # Useful for blocking merges
+    # See: https://github.com/nahuelhds/ci-semver-gitflow-actions/settings/environments
+    environment: ci
 
     permissions:
       contents: write
@@ -24,6 +32,12 @@ jobs:
       version: ${{ steps.version-bump.outputs.newTag  }}
 
     steps:
+      - name: 'Output refs'
+        run: |
+          echo ref: ${{ github.ref }}
+          echo base: ${{ github.base_ref }}
+          echo head: ${{ github.head_ref }}
+
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
         with:
@@ -36,6 +50,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          target-branch: ${{github.event.pull_request.merged == true && github.base_ref || '' }}
           # See: https://github.com/phips28/gh-action-bump-version?tab=readme-ov-file#usage
           bump-policy: 'ignore'
           # If the PR is merged, then minor: 1.0.0 -> 1.1.0

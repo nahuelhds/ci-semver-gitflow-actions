@@ -11,9 +11,13 @@ on:
       - ready_for_review
       - closed
 
+concurrency:
+  cancel-in-progress: true
+  group: ${{ github.head_ref }}
+
 jobs:
   bump:
-    if: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master' }}
+    if: ${{ github.head_ref != 'main' && github.head_ref != 'master' }}
 
     name: 'Pre-release bump'
     runs-on: ubuntu-latest
@@ -25,6 +29,12 @@ jobs:
       version: ${{ steps.version-bump.outputs.newTag }}
 
     steps:
+      - name: 'Output refs'
+        run: |
+          echo ref: ${{ github.ref }}
+          echo base: ${{ github.base_ref }}
+          echo head: ${{ github.head_ref }}
+
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
         with:
