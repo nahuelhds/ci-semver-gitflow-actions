@@ -36,10 +36,15 @@ jobs:
         id: version-type
         run: |
           
-          type=minor
           if [[ ${{ github.head_ref }} =~ ^release/major$ ]]; then
             type=major
             echo "MAJOR version detected"
+          elif [[ ${{ github.head_ref }} =~ ^hotfix/.*$ ]]; then
+            type=patch
+            echo "PATCH version detected"
+          else
+            type=minor
+            echo "MINOR version detected"
           fi
           
           final_version=prerelease
