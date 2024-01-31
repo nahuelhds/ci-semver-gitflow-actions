@@ -43,9 +43,9 @@ jobs:
           fi
           
           final_version=prerelease
-          if [[ github.event.pull_request.merged == true ]]; then
+          if [[ ${{ github.event.pull_request.merged }} == true ]]; then
             final_version=$type
-          elif [[ github.event.action == 'opened' ]]; then
+          elif [[ ${{ github.event.action }} == 'opened' ]]; then
             final_version=pre$type
           fi
           
