@@ -75,8 +75,9 @@ jobs:
           commit-message: Merge '${{ github.ref_head }}' into ${{ env.MERGE_BRANCH }}
           title: ${{ needs.bump.outputs.version }} to ${{ env.MERGE_BRANCH }}
           body: Sync '${{ env.MERGE_BRANCH }}' with '${{ env.github.ref_head }}'
-          branch: ${{ github.ref_name }}
           base: ${{ env.MERGE_BRANCH }}
+          branch: backport/${{ needs.bump.outputs.version }}
+          delete-branch: true
 
       - name: Check outputs
         if: ${{ steps.cpr.outputs.pull-request-number }}
