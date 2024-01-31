@@ -29,6 +29,6 @@ jobs:
 
         # Reference: https://cli.github.com/manual/gh_pr_create
         run: |
-          gh pr create --title "Backport: test..${{ env.DEVELOP_BRANCH }}" --body "Backport for test" --repo $GITHUB_REPOSITORY --base ${{ env.DEVELOP_BRANCH }}
+          gh pr create --title "Backport: test..${{ env.DEVELOP_BRANCH }}" --body "Backport for test" --base ${{ env.DEVELOP_BRANCH }}
 
   
