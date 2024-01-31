@@ -25,7 +25,7 @@ jobs:
       version: ${{ steps.version-bump.outputs.newTag }}
 
     steps:
-      - name: 'See refs'
+      - name: 'Output refs'
         run: |
           echo ref: ${{ github.ref }}
           echo base: ${{ github.base_ref }}

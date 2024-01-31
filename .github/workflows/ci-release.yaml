@@ -23,6 +23,12 @@ jobs:
       version: ${{ steps.version-bump.outputs.newTag  }}
 
     steps:
+      - name: 'Output refs'
+        run: |
+          echo ref: ${{ github.ref }}
+          echo base: ${{ github.base_ref }}
+          echo head: ${{ github.head_ref }}
+
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
         with:
