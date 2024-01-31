@@ -28,7 +28,7 @@ jobs:
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.pull_request.merged == true && github.base_ref || github.event.pull_request.head.sha }}
           fetch-depth: 0
 
       - name: "Get commit info"
