@@ -4,8 +4,9 @@
   "description": "Example project for showing how to CI with gitflow and automatic semver",
   "main": "index.js",
   "scripts": {
-    "refresh-branches": "git checkout develop && git pull && git checkout main && git pull",
+    "refresh-branches": "git checkout main && git pull && git checkout develop && git pull",
     "refresh-tags": "git tag | xargs -n 1 -I% git tag -d % && git fetch",
+    "refresh": "npm run refresh-tags && npm run refresh-branches",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
