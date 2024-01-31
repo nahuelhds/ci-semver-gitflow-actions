@@ -19,5 +19,9 @@ An example repo of CI with semantic versioning with gitflow branching model
 
 ## Next step:
 
+Changelog
+- [github_changelog_generator](https://github.com/marketplace/actions/generate-changelog)
+- [gitflow-changelog-generator](https://github.com/marketplace/actions/gitflow-changelog-generator)
+
 Fully integrate with [Semantic Release](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/ci-configurations/github-actions.md)
 - [Release workflow](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/release-workflow/README.md)
