@@ -1,4 +1,4 @@
-ame: Main CI
+name: Main CI
 
 on:
   pull_request:
@@ -81,24 +81,38 @@ jobs:
         run: |
           git tag | grep ${{ needs.bump.outputs.version }}- | xargs -n 1 -I% git push origin :refs/tags/%
 
-  merge-develop:
+
+  pr-to-develop:
     needs:
       - bump
       - build
-    name: "Merge to develop"
+
+    name: "PR to develop"
     runs-on: ubuntu-latest
 
     permissions:
       contents: write
 
     steps:
-      - name: 'Checkout source code'
+      - name: Checkout source code
         uses: 'actions/checkout@v4'
         with:
-          ref: ${{ env.DEVELOP_BRANCH }}
+          ref: ${{ env.MAIN_BRANCH }}
           fetch-depth: 0
 
-      - name: 'Merge to develop'
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: Merge '${{ github.ref_head }}' into ${{ env.MERGE_BRANCH }}
+          title: ${{ needs.bump.outputs.version }} to ${{ env.MERGE_BRANCH }}
+          body: Sync '${{ env.MERGE_BRANCH }}' with '${{ env.github.ref_head }}'
+          branch: backport/${{ needs.bump.outputs.version }}
+          delete-branch: true
+
+      - name: Check outputs
+        if: ${{ steps.cpr.outputs.pull-request-number }}
         run: |
-          git merge --no-ff ${{ env.MAIN_BRANCH }} -m "Merge branch '${{ env.MAIN_BRANCH }}' into ${{ env.DEVELOP_BRANCH }}"
-          git push 
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+  
