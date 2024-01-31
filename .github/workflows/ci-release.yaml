@@ -37,6 +37,7 @@ jobs:
           echo ref: ${{ github.ref }}
           echo base: ${{ github.base_ref }}
           echo head: ${{ github.head_ref }}
+          echo named-version: ${GITHUB_HEAD_REF##*/}
           echo "named-version=${GITHUB_HEAD_REF##*/}" >> $GITHUB_OUTPUT
 
       - name: 'Checkout source code'
