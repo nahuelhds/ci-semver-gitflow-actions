@@ -69,6 +69,7 @@ jobs:
       - name: Checkout source code
         uses: 'actions/checkout@v4'
         with:
+          ref: ${{ github.ref_name }}
           fetch-depth: 0
 
       - name: Create Pull Request
@@ -78,7 +79,6 @@ jobs:
           commit-message: Merge '${{ github.ref_head }}' into ${{ env.MERGE_BRANCH }}
           title: ${{ needs.bump.outputs.version }} to ${{ env.MERGE_BRANCH }}
           body: Sync '${{ env.MERGE_BRANCH }}' with '${{ env.github.ref_head }}'
-          base: ${{ env.MERGE_BRANCH }}
           branch: backport/${{ needs.bump.outputs.version }}
           delete-branch: true
 
