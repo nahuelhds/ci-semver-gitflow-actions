@@ -21,7 +21,13 @@ jobs:
     name: 'Release bump'
     runs-on: ubuntu-latest
 
-    permissions: write-all
+    # This is for being able to push on protected branches with ruleset
+    # See: https://stackoverflow.com/a/76135647/1588525
+    # And: https://github.com/nahuelhds/ci-semver-gitflow-actions/settings/environments/2165541222/edit
+    environment: ci
+
+    permissions:
+      contents: write
 
     outputs:
       version: ${{ steps.version-bump.outputs.newTag  }}
@@ -38,6 +44,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
+          ssh-key: ${{ secrets.GH_ACTION_BUMP_VERSION_SECRET }}
 
       - name: 'Bump version'
         id: version-bump
