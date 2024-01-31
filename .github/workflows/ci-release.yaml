@@ -1,4 +1,4 @@
-name: CI
+name: CI Release
 
 on:
   pull_request:
@@ -32,11 +32,29 @@ jobs:
       version: ${{ steps.version-bump.outputs.newTag  }}
 
     steps:
-      - name: 'Output refs'
+      - name: 'Parse version type'
+        id: version-type
         run: |
-          echo ref: ${{ github.ref }}
-          echo base: ${{ github.base_ref }}
-          echo head: ${{ github.head_ref }}
+          
+          type=minor
+          if [[ ${{ github.head_ref }} =~ ^release/major$ ]]; then
+            type=major
+            echo "MAJOR version detected"
+          fi
+          
+          final_version=prerelease
+          echo merged: ${{ github.event.pull_request.merged }}
+          echo action: ${{ github.event.action }}
+          if [[ ${{ github.event.pull_request.merged }} = true ]]; then
+            final_version=$type
+          elif [[ ${{ github.event.action }} = 'opened' ]]; then
+            final_version=pre$type
+          elif [[ ${{ github.event.action }} = 'reopened' ]]; then
+            final_version=pre$type
+          fi
+          
+          echo "Final version type is $final_version"
+          echo "value=$final_version" >> $GITHUB_OUTPUT
 
       - name: 'Checkout source code'
         uses: 'actions/checkout@v4'
@@ -56,7 +74,7 @@ jobs:
           # If the PR is merged, then minor: 1.0.0 -> 1.1.0
           # If it has been opened, then pre-minor: 1.0.0 -> 1.1.0-rc.0
           # Otherwise, pre-release: 1.1.0-rc.0 -> 1.1.0-rc.1
-          version-type: ${{ github.event.pull_request.merged == true && 'minor' || github.event.action == 'opened' && 'preminor' || 'prerelease' }}
+          version-type: ${{ steps.version-type.outputs.value }}
           # Use skip-tag if you create the tag in another step of your workflow
           # skip-tag: 'true'
 
