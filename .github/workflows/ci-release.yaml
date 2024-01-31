@@ -6,6 +6,9 @@ on:
       - master
       - main
 
+env:
+  MERGE_BRANCH: develop
+
 jobs:
   bump:
     name: 'RC version'
