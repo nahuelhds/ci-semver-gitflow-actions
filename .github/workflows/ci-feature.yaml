@@ -5,12 +5,9 @@ on:
     branches:
       - develop
 
-env:
-  CI_ENABLED: true
-
 jobs:
   bump:
-    if: ${{ env.CI_ENABLED == 'true' }}
+    if: true
 
     name: 'Alpha version'
     runs-on: ubuntu-latest

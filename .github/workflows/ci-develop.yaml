@@ -5,12 +5,9 @@ on:
     branches:
       - develop
 
-env:
-  ENABLED: false
-
 jobs:
   bump:
-    if: ${{ env.ENABLED == 'true' }}
+    if: true
 
     name: 'Beta version'
     runs-on: ubuntu-latest
