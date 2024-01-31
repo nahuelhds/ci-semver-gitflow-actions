@@ -14,8 +14,6 @@ on:
 
 jobs:
   bump:
-    if: true
-
     name: 'Release bump'
     runs-on: ubuntu-latest
 
