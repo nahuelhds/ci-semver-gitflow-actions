@@ -25,11 +25,10 @@ jobs:
 
       - name: Create Pull Request
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         # Reference: https://cli.github.com/manual/gh_pr_create
         run: |
           gh pr create --title "Backport: test..${{ env.DEVELOP_BRANCH }}" --body "Backport for test" --repo $GITHUB_REPOSITORY --base ${{ env.DEVELOP_BRANCH }}
-  #          gh pr create --title "Release ${{ needs.bump.outputs.version }} to ${{ env.DEVELOP_BRANCH }}" --body "$NUM_OPEN_ISSUES issues remaining" --repo $GITHUB_REPOSITORY
 
   
