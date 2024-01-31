@@ -9,12 +9,13 @@ on:
       - main
 
 env:
+  ENABLED: true
   DEVELOP_BRANCH: develop
   MAIN_BRANCH: main
 
 jobs:
   bump:
-    if: ${{ github.event.pull_request.merged == true }}
+    if: ${{ env.ENABLED == 'true' && github.event.pull_request.merged == true }}
     name: 'Final version'
     runs-on: ubuntu-latest
 
