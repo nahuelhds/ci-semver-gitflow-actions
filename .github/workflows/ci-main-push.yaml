@@ -1,0 +1,46 @@
+name: Main CI
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  DEVELOP_BRANCH: develop
+  MAIN_BRANCH: main
+
+jobs:
+  pr-to-develop:
+    needs:
+      - bump
+      - build
+
+    name: "PR to develop"
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout source code
+        uses: 'actions/checkout@v4'
+        with:
+          fetch-depth: 0
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: Merge '${{ github.ref_head }}' into ${{ env.MAIN_BRANCH }}
+          title: test${{ needs.bump.outputs.version }} to ${{ env.DEVELOP_BRANCH }}
+          body: Sync '${{ env.DEVELOP_BRANCH }}' with '${{ env.MAIN_BRANCH }}'
+          ref: ${{ env.DEVELOP_BRANCH }}
+          branch: backport/test${{ needs.bump.outputs.version }}
+          delete-branch: true
+
+      - name: Check outputs
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+  
